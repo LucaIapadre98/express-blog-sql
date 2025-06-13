@@ -1,5 +1,10 @@
-const connection = require("..database/db")
+const connection = require("../database/db")
 const index = (req, res) => {
+    const sql = "SELECT * FROM `posts`";
+    connection.query(sql, (err, results) => {
+        if(err) throw err;
+        console.log(results);
+    })
     // const filterTags = req.query.tags;
     // let fileteredPosts = posts;    
     
