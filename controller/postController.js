@@ -147,7 +147,25 @@ const modify = (req, res) =>{
 
 };
 const destroy = (req, res) => {
-    // const postId = parseInt(req.params.id);
+    const postId = parseInt(req.params.id);
+    const sql = `
+        DELETE 
+        FROM posts
+        WHERE id = ?`
+    ;
+    connection.query(sql, [postId], (err, results) =>{
+        if(err) return res.status(500).json({error:"Error executing!"});
+        if(results.length === 0) return res.status (404).json({error:"Post not found"});
+
+        const sqldelete = `
+            DELETE
+            FROM posts
+            WHERE posts.id = ?`
+        ;
+        connection.query(sqldelete, [postId], (err, results) =>{
+            console.log(results);
+        });
+    })
     // const post = posts.find(post => post.id === id);
 
     // if (!post) {
