@@ -25,9 +25,11 @@ const index = (req, res) => {
 };
 const show = (req, res) => {
     const postId = parseInt(req.params.id);
-    const sql = `SELECT * 
-    FROM posts
-    WHERE id = ?`;
+    const sql = `
+        SELECT * 
+        FROM posts
+        WHERE id = ?`
+    ;
 
     connection.query(sql, [postId], (err, results) =>{
         if(err) return res.status(500).json({error:"Error executing!"});
@@ -39,7 +41,7 @@ const show = (req, res) => {
             SELECT tags.*
             FROM post_tag
             INNER JOIN tags
-            ON tags.id = post_tag.post_id
+            ON tags.id = post_tag.tag_id
             WHERE tag_id = ?`
         ;
         connection.query(sqltags, [postId], (err, results) =>{
