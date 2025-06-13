@@ -2,9 +2,15 @@ const connection = require("../database/db")
 const index = (req, res) => {
     const sql = "SELECT * FROM `posts`";
     connection.query(sql, (err, results) => {
-        if(err) throw err;
+        if(err) return res.status(500).json({error:"Error executing!"});
+
         console.log(results);
-    })
+            
+        res.json({
+            data: results,
+            status:200
+        });
+    });
     // const filterTags = req.query.tags;
     // let fileteredPosts = posts;    
     
@@ -18,7 +24,37 @@ const index = (req, res) => {
     // });
 };
 const show = (req, res) => {
-    // const postId = parseInt(req.params.id);
+    const postId = parseInt(req.params.id);
+    const sql = `SELECT * 
+    FROM posts
+    WHERE id = ?`;
+
+    connection.query(sql, [postId], (err, results) =>{
+        if(err) return res.status(500).json({error:"Error executing!"});
+        if(results.length === 0) return res.status (404).json({error:"Post not found"});
+
+        const post = results[0];
+
+        const sqltags = `
+            SELECT tags.*
+            FROM post_tag
+            INNER JOIN tags
+            ON tags.id = post_tag.post_id
+            WHERE tag_id = ?`
+        ;
+        connection.query(sqltags, [postId], (err, results) =>{
+            console.log(results);
+            post.tags = results;
+            res.json({
+                data: post,
+                status:200
+            });
+        });
+    });
+
+
+
+
     // const post = posts.find(post => post.id === postId);
 
     // if(!post){
